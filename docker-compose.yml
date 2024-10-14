@@ -1,0 +1,41 @@
+﻿version: '3.8'
+
+services:
+  db:
+    container_name: RestaurantDB
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Restaurants@@"
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  webapi:
+    container_name: web-api
+    image: web-api
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
+    environment:
+      DbServer: "RestaurantDB" 
+      DbPort: "1433"
+      DbUser: "SA"
+      DbPassword: "Restaurants@@"
+      Database: "NhaHangDB"
+    depends_on:
+      - db
+    ports:
+      - "5000:80"
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  sql_data:
