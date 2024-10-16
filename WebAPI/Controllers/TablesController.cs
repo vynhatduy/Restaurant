@@ -7,5 +7,10 @@ namespace WebAPI.Controllers
     [ApiController]
     public class TablesController : ControllerBase
     {
+        private ApplicationDbContext _context;
+        public TablesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
     }
 }
