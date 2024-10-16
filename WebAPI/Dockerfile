@@ -1,6 +1,5 @@
 ﻿# Chọn hình ảnh cơ bản ASP.NET Core 8.0
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -19,12 +18,12 @@ COPY . .
 
 # Chuyển đến thư mục chứa dự án và xây dựng ứng dụng
 WORKDIR "/src/WebAPI"
-RUN dotnet build "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./WebAPI.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/build
 
 # Publish ứng dụng
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/publish /p:UseAppHost=false
 
 # Tạo container cuối cùng
 FROM base AS final

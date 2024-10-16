@@ -19,7 +19,7 @@ namespace NhaHang.Helpers
             _audience = audience;
         }
 
-        public string GenerateEmployeeToken(NhanVien nv)
+        public string GenerateEmployeeToken(NhanVien nv,string tenQuyen)
         {
             var claims = new[]
             {
@@ -27,7 +27,7 @@ namespace NhaHang.Helpers
                 new Claim("Sdt", nv.SDT ?? string.Empty),
                 new Claim("HoTen", nv.HoTen ?? string.Empty),
                 new Claim("IdQuyen", nv.IdQuyen?.ToString() ?? string.Empty),
-                new Claim("TenQuyen", nv.PhanQuyen.TenQuyen ?? string.Empty)
+                new Claim(ClaimTypes.Role, tenQuyen)
             };
 
             return CreateToken(claims);

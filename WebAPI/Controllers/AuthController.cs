@@ -32,9 +32,10 @@ namespace NhaHang.Controllers
                         var jwtKey = _configuration["Jwt:Key"];
                         var jwtIssuer = _configuration["Jwt:Issuer"];
                         var jwtAudience = _configuration["Jwt:Audience"];
+                        var tenQuyen = _context.PhanQuyens.FirstOrDefault(x => x.IdQuyen == user.IdQuyen).TenQuyen??"User";
 
                         var tokenGenerator = new GenerateToken(jwtKey, jwtIssuer, jwtAudience);
-                        var token = tokenGenerator.GenerateEmployeeToken(user);
+                        var token = tokenGenerator.GenerateEmployeeToken(user,tenQuyen);
 
                         return Ok(new { Token = token });
                     }

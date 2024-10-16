@@ -23,11 +23,13 @@ namespace NhaHang.Controllers
         {
             string vnp_HashSecret = _vnpaySettings.vnp_HashSecret;
             VnPayLibrary vnpay = new VnPayLibrary();
+
             // Duyệt qua các query parameters của request
             foreach (var key in Request.Query.Keys)
             {
                 vnpay.AddResponseData(key, Request.Query[key]);
             }
+
             string vnp_SecureHash = Request.Query["vnp_SecureHash"];
             if (vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret))
             {
@@ -35,7 +37,7 @@ namespace NhaHang.Controllers
                 string orderId = Request.Query["vnp_TxnRef"];
                 string paymentStatus = Request.Query["vnp_TransactionStatus"];
 
-                // Xử lý đơn hàng sau khi xác thực thành công (tùy thuộc vào logic của bạn)
+                // Xử lý đơn hàng sau khi xác thực thành công
                 if (paymentStatus == "00") // 00 là trạng thái giao dịch thành công
                 {
                     // Cập nhật trạng thái đơn hàng ở đây
@@ -72,7 +74,7 @@ namespace NhaHang.Controllers
             vnpay.AddRequestData("vnp_IpAddr", HttpContext.Connection.RemoteIpAddress.ToString()); // Địa chỉ IP
             vnpay.AddRequestData("vnp_Locale", "vn"); // Ngôn ngữ hiển thị
             vnpay.AddRequestData("vnp_OrderInfo", model.MoTa); // Thông tin đơn hàng
-            vnpay.AddRequestData("vnp_OrderType", "other"); // Mã danh mục hàng hóa (thay đổi theo nhu cầu)
+            vnpay.AddRequestData("vnp_OrderType", "other"); // Mã danh mục hàng hóa
             vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl); // URL nhận kết quả
             vnpay.AddRequestData("vnp_TxnRef", model.IdHoaDon.ToString()); // Mã tham chiếu giao dịch
             vnpay.AddRequestData("vnp_ExpireDate", DateTime.Now.AddMinutes(30).ToString("yyyyMMddHHmmss")); // Thời gian hết hạn
@@ -80,9 +82,8 @@ namespace NhaHang.Controllers
             // Tạo URL thanh toán
             string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
 
+            // Trả về URL thanh toán để client chuyển hướng
             return Ok(new { paymentUrl });
         }
-
-
     }
 }

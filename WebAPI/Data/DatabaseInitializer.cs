@@ -5,12 +5,7 @@ using Microsoft.EntityFrameworkCore;
 public class DatabaseInitializer
 {
     public static void Initialize(ApplicationDbContext context)
-    {
-        // Xóa cơ sở dữ liệu nếu tồn tại
-        context.Database.EnsureDeleted();
-
-        // Tạo lại cơ sở dữ liệu
-        context.Database.EnsureCreated();
+    { 
 
         if (!context.Banners.Any())
         {

@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NhaHang.Helpers;
 using System.IO;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,27 +34,44 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Cấu hình JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(otp =>
+    .AddJwtBearer(options =>
     {
-        otp.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidAudience = builder.Configuration["Jwt:Audience"], 
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                var roleClaim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+                if (roleClaim != null)
+                {
+                    Console.WriteLine("User role: " + roleClaim.Value);  // Kiểm tra role
+                }
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("Authentication failed: " + context.Exception.Message);
+                return Task.CompletedTask;
+            }
         };
     });
 
 // Cấu hình chính sách ủy quyền
-builder.Services.AddAuthorization(otp =>
+builder.Services.AddAuthorization(options =>
 {
-    otp.AddPolicy("AdminPolicy", policy => policy.RequireRole("Administrator"));
-    otp.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Management"));
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Administrator"));
+    options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Management"));
 });
-
 // Cấu hình VNPAY settings
 builder.Services.Configure<VnpaySettings>(builder.Configuration.GetSection("VnpaySettings"));
 
@@ -99,13 +117,12 @@ if (app.Environment.IsDevelopment())
 }
 
 // Khởi tạo dữ liệu mẫu
-// Khởi tạo dữ liệu mẫu
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-
-    DatabaseInitializer.Initialize(dbContext);
+    
+        DatabaseInitializer.Initialize(dbContext);
+    
 }
 
 

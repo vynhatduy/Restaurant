@@ -265,7 +265,8 @@ public class ChiTietHoaDon
 
     public decimal? GiaBan { get; set; } // Giá bán
 
-    public decimal? SoLuong { get; set; } // Số lượng
+    public int? SoLuong { get; set; } // Số lượng
+    public bool? TrangThai { get; set; }
     public decimal? ThanhTien { get; set; } 
 
     public virtual HoaDon HoaDon { get; set; } // Navigation property (nếu cần thiết)

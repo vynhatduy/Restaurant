@@ -2,8 +2,7 @@
 {
     public class ProductRequestModel
     {
-        public Guid IdSanPham { get; set; }
-        public Guid IdLoai { get; set; }
+        public string TenLoai { get; set; }
 
 
         public string TenSanPham { get; set; }
@@ -20,8 +19,5 @@
 
         public double SoSao { get; set; }
 
-        public DateTime? NgayTao { get; set; }
-
-        public DateTime? NgayCapNhat { get; set; }
     }
 }

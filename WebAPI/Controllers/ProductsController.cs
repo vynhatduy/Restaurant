@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NhaHang.Models.Request;
+using WebAPI.Models.Request;
 
 namespace NhaHang.Controllers
 {
@@ -98,7 +99,7 @@ namespace NhaHang.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("Product")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult AddProduct(ProductRequestModel model)
         {
@@ -108,10 +109,16 @@ namespace NhaHang.Controllers
                 {
 
                     var newId = Guid.NewGuid();
+                    var loai = _context.Loais.FirstOrDefault(x => x.TenLoai.ToLower().Contains(model.TenLoai.ToLower()));
+                    if (loai == null)
+                    {
+                        return NotFound(new { Message = "Không tìm thấy tên loại :" + model.TenLoai });
+                    }
+                    var IdLoai = loai.IdLoai;
                     var newProduct = new SanPham
                     {
                         IdSanPham = newId,
-                        IdLoai = model.IdLoai,
+                        IdLoai = IdLoai,
                         TrangThai = true,
                         HinhAnh = model.HinhAnh,
                         MoTa = model.MoTa,
@@ -123,41 +130,47 @@ namespace NhaHang.Controllers
                         TenSanPham = model.TenSanPham
                     };
                     _context.SanPhams.Add(newProduct);
-                    _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     return Ok("Đã thêm sản phẩm mới");
                 }
-                return NoContent();
+                return BadRequest(new { Message = $"Lỗi đối tượng truyền vào Loại: {model.TenLoai}, TenSanPham: {model.TenSanPham}, MoTa: {model.MoTa}, MoTaChiTiet: {model.MoTaChiTiet}, HinhAnh: {model.HinhAnh}, TrangThai: {model.TrangThai}, DonGia: {model.DonGia}, SoSao: {model.SoSao}" });
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(new { Message = e.Message });
             }
         }
-        [HttpPut]
+        [HttpPut("Product/{IdSanPham:guid}")]
         [Authorize(Roles = "Administrator,Management")]
-        public async Task<IActionResult> UpdateProduct(ProductRequestModel model)
+        public IActionResult UpdateProduct(Guid IdSanPham, ProductRequestModel model)
         {
             try
             {
                 if (model != null)
                 {
-                    var curProduct = _context.SanPhams.FirstOrDefault(x => x.IdSanPham == model.IdSanPham);
+                    var loai = _context.Loais.FirstOrDefault(x => x.TenLoai.ToLower().Contains(model.TenLoai.ToLower()));
+                    if (loai == null)
+                    {
+                        return NotFound(new { Message = "Không tìm thấy tên loại :" + model.TenLoai });
+                    }
+                    var IdLoai = loai.IdLoai;
+                    var curProduct = _context.SanPhams.FirstOrDefault(x => x.IdSanPham == IdSanPham);
                     if (curProduct != null)
                     {
-                        curProduct.IdLoai = model.IdLoai;
-                        curProduct.TrangThai = model.TrangThai;
-                        curProduct.HinhAnh = model.HinhAnh;
-                        curProduct.MoTa = model.MoTa;
-                        curProduct.MoTaChiTiet = model.MoTaChiTiet;
-                        curProduct.NgayCapNhat = DateTime.Now;
-                        curProduct.DonGia = model.DonGia;
-                        curProduct.TenSanPham = model.TenSanPham;
+                            curProduct.TrangThai = model.TrangThai;
+                            curProduct.HinhAnh = model.HinhAnh;
+                            curProduct.MoTa = model.MoTa;
+                            curProduct.MoTaChiTiet = model.MoTaChiTiet;
+                            curProduct.NgayCapNhat = DateTime.Now;
+                            curProduct.DonGia = model.DonGia;
+                            curProduct.TenSanPham = model.TenSanPham;
 
-                        _context.SanPhams.Update(curProduct);
-                        await _context.SaveChangesAsync();
+                            _context.SanPhams.Update(curProduct);
+                            _context.SaveChanges();
 
-                        return Ok("Đã cập nhật sản phẩm thành công");
-                    }
+                            return Ok("Đã cập nhật sản phẩm thành công");
+                        }
+
                     return NotFound("Sản phẩm không tồn tại");
                 }
                 return BadRequest("Thông tin sản phẩm không hợp lệ");
@@ -167,7 +180,7 @@ namespace NhaHang.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpDelete("{IdSanPham:guid}")]
+        [HttpDelete("Product/{IdSanPham:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult DeleteProduct(Guid IdSanPham)
         {
@@ -187,5 +200,172 @@ namespace NhaHang.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpPost("Categories")]
+        [Authorize(Roles ="Administrator,Management")]
+        public IActionResult AddCategories(CategoriesRequestModel model)
+        {
+            try
+            {
+                var item = _context.DanhMucs.FirstOrDefault(x => x.TenDanhMuc.ToLower().Equals(model.TenDanhMuc.ToLower()));
+                if (item != null)
+                {
+                    return BadRequest(new { ErrorMessage = "Tên danh mục đã tồn tại" });
+                }
+                var newItem = new DanhMuc
+                {
+                    IdDanhMuc = Guid.NewGuid(),
+                    MoTa = model.MoTa,
+                    NgayTao = DateTime.Now,
+                    NgayCapNhat = DateTime.Now,
+                    TenDanhMuc = model.TenDanhMuc
+                };
+                _context.DanhMucs.Add(newItem);
+                _context.SaveChanges();
+                return Ok(new { Message = "Đã thêm danh mục mới" });
+            }
+            catch(Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi : {e.Message}" });
+            }
+        }
+        [HttpPut("Categories/{IdDanhMuc:guid}")]
+        [Authorize(Roles = "Administrator,Management")]
+        public IActionResult UpdateCategories(Guid IdDanhMuc,CategoriesRequestModel model)
+        {
+            try
+            {
+                var item = _context.DanhMucs.FirstOrDefault(x => x.IdDanhMuc==IdDanhMuc);
+                if (item == null)
+                {
+                    return BadRequest(new { ErrorMessage = "Danh mục không tồn tại" });
+                }
+                else
+                {
+                    item.TenDanhMuc = model.TenDanhMuc;
+                    item.MoTa = model.MoTa;
+                    item.NgayCapNhat = DateTime.Now;
+                    _context.DanhMucs.Update(item);
+                    _context.SaveChanges();
+                    return Ok(new { Message = "Đã cập nhật danh mục" });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi : {e.Message}" });
+            }
+        }
+        [HttpDelete("Categories/{IdDanhMuc:guid}")]
+        [Authorize(Roles = "Administrator,Management")]
+        public IActionResult DeleteCategories(Guid IdDanhMuc)
+        {
+            try
+            {
+                var item = _context.DanhMucs.FirstOrDefault(x => x.IdDanhMuc==IdDanhMuc);
+                if (item != null)
+                {
+                    return BadRequest(new { ErrorMessage = "Danh mục đã tồn tại" });
+                }
+                else
+                {
+                    _context.DanhMucs.Remove(item);
+                    _context.SaveChanges();
+                    return Ok(new { Message = "Đã thêm danh mục mới" });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi : {e.Message}" });
+            }
+        }
+
+        [HttpPost("Types/{IdDanhMuc:guid}")]
+        [Authorize(Roles ="Administrator,Management")]
+        public IActionResult AddTypes(Guid IdDanhMuc,TypesRequestModel model)
+        {
+            try
+            {
+                var danhmuc = _context.DanhMucs.FirstOrDefault(x => x.IdDanhMuc == IdDanhMuc);
+                if (danhmuc == null)
+                {
+                    return NotFound(new { ErrorMessage = "Không tìm thấy danh mục nào" });
+                }
+                else
+                {
+                    var item = _context.Loais.FirstOrDefault(x => x.TenLoai.ToLower().Equals(model.TenLoai.ToLower()));
+                    if (item != null)
+                    {
+                        return BadRequest(new { ErrorMessage = "Tên loại đã tồn tại" });
+                    }
+                    var newItem = new Loai
+                    {
+                        IdDanhMuc = IdDanhMuc,
+                        MoTa = model.MoTa,
+                        NgayTao = DateTime.Now,
+                        NgayCapNhat = DateTime.Now,
+                        TenLoai = model.TenLoai,
+                        IdLoai = Guid.NewGuid()
+
+                    };
+                    _context.Loais.Add(newItem);
+                    _context.SaveChanges();
+                    return Ok(new { Message = "Đã thêm loại mới" });
+                }
+            }
+            catch(Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi : {e.Message}" });
+            }
+        }
+        [HttpPut("Types/{IdLoai:guid}")]
+        [Authorize(Roles = "Administrator,Management")]
+        public IActionResult UpdateType(Guid IdLoai,TypesRequestModel model)
+        {
+            try
+            {
+                var item = _context.Loais.FirstOrDefault(x => x.IdLoai==IdLoai);
+                if (item == null)
+                {
+                    return BadRequest(new { ErrorMessage = "Loại không tồn tại" });
+                }
+                else
+                {
+                    item.MoTa = model.MoTa;
+                    item.NgayCapNhat = DateTime.Now;
+                    item.TenLoai = model.TenLoai;
+                    _context.Loais.Update(item);
+                    _context.SaveChanges();
+                    return Ok(new { Message = "Đã cập nhật loại" });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi : {e.Message}" });
+            }
+        }
+        [HttpDelete("Types/{IdLoai:guid}")]
+        [Authorize(Roles = "Administrator,Management")]
+        public IActionResult DeleteType(Guid IdLoai)
+        {
+            try
+            {
+                var item = _context.Loais.FirstOrDefault(x => x.IdLoai == IdLoai);
+                if (item != null)
+                {
+                    return BadRequest(new { ErrorMessage = "Danh mục đã tồn tại" });
+                }
+                else
+                {
+                    _context.Loais.Remove(item);
+                    _context.SaveChanges();
+                    return Ok(new { Message = "Đã thêm danh mục mới" });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi : {e.Message}" });
+            }
+        }
+
+
     }
 }

@@ -1,0 +1,75 @@
+﻿:root {
+    --primary: #FEA116;
+    --light: #F1F8FF;
+    --dark: #0F172B;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+/* Đặt layout trang tổng thể */
+html, body {
+    height: 100%;
+    font-family: "Heebo", sans-serif;
+}
+
+.container{
+    min-width:890px;
+    max-width:1320px;
+    margin-right:auto;
+    margin-left:auto;
+}
+/* Cấu trúc chính của trang */
+.layout {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    height:100%;
+}
+
+header {
+    background-color: #f8f8f8;
+    z-index: 1000;
+    box-shadow: 0 4px 2px -2px gray;
+}
+
+/* Căn giữa phần middle */
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Căn giữa theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    padding: 20px;
+}
+
+/* Footer luôn nằm ở dưới */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Một số CSS tùy chỉnh */
+h2 {
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+p {
+    font-size: 1.2rem;
+}
+.btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: .5s;
+}
+.btn.btn-primary{
+    color: #FFFFFF;
+    background-color:var(--primary);
+}
