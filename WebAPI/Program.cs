@@ -17,6 +17,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+
 // Lấy thông tin kết nối từ biến môi trường
 var server = Environment.GetEnvironmentVariable("DbServer") ?? "RestaurantDB"; // Tên container
 var port = Environment.GetEnvironmentVariable("DbPort") ?? "1433";
@@ -120,14 +132,23 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    
-        DatabaseInitializer.Initialize(dbContext);
-    
-}
 
+    try
+    {
+        dbContext.Database.Migrate();
+
+        DatabaseInitializer.Initialize(dbContext);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"An error occurred while migrating or initializing the database: {e.Message}");
+    }
+}
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

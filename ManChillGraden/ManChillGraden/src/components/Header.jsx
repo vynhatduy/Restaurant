@@ -41,7 +41,7 @@ const Header = () => {
                             <li><NavLink to="/about" activeClassName="active">About</NavLink></li>
                             <li><NavLink to="/service" activeClassName="active">Service</NavLink></li>
                             <li><NavLink to="/menu" activeClassName="active">Menu</NavLink></li>
-                            <li className="pages dropdown-toggle">
+                            <li className="pages dropdown-toggle text-white">
                                 PAGES
                                 <ul className="submenu">
                                     <li><NavLink to="/booking" activeClassName="active">Booking</NavLink></li>
@@ -57,12 +57,12 @@ const Header = () => {
                 </div>
                 <div className="middle">
                     <div className="left">
-                        <h1>Enjoy Our Delicious Meal</h1>
-                        <p>Chào mừng bạn đến với Mận Chill Garden- nơi hòa mình vào không gian lãng mạn, ấm áp và thưởng thức những món ăn ngon. Mận Chill Garden là điểm đến lý tưởng cho những buổi hẹn hò, gặp gỡ bạn bè, các buổi tiệc sinh nhật, hay đơn giản là bữa ăn gia đình.</p>
+                        <h1 className='text-white'>Enjoy Our Delicious Meal</h1>
+                        <p class="text-white">Chào mừng bạn đến với Mận Chill Garden- nơi hòa mình vào không gian lãng mạn, ấm áp và thưởng thức những món ăn ngon. Mận Chill Garden là điểm đến lý tưởng cho những buổi hẹn hò, gặp gỡ bạn bè, các buổi tiệc sinh nhật, hay đơn giản là bữa ăn gia đình.</p>
                         <a className="btn btn-primary">Book A Table</a>
                     </div>
                     <div className="right">
-                        <img className="img-fluid" src={hero} width="400px" height="400px" alt="Hero" />
+                        <img className="img-head" src={hero} width="400px" height="400px" alt="Hero" />
                     </div>
                 </div>
             </div>

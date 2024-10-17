@@ -1,10 +1,12 @@
 import React from 'react';
+import Aboutcpn from '../components/Aboutcpn';
+import TeamStartcpn from '../components/TeamStartcpn';
 
 const About = () => {
     return (
         <div className="home">
-            <h2>ABOUT</h2>
-            <p>Welcome to our home page!</p>
+            <Aboutcpn/>
+            <TeamStartcpn/>
         </div>
     );
 };

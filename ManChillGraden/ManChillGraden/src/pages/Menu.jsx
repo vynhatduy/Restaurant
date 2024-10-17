@@ -1,11 +1,8 @@
 import React from 'react';
-
+import Menucpn from '../components/Menucpn';
 const Menu = () => {
     return (
-        <div className="home">
-            <h2>Menu</h2>
-            <p>Welcome to our home page!</p>
-        </div>
+        <Menucpn></Menucpn>
     );
 };
 

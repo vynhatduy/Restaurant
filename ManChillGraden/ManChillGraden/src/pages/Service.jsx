@@ -1,10 +1,9 @@
 import React from 'react';
-
+import Servicecpn from '../components/Servicecpn';
 const Service = () => {
     return (
         <div className="home">
-            <h2>Service</h2>
-            <p>Welcome to our home page!</p>
+            <Servicecpn/>
         </div>
     );
 };

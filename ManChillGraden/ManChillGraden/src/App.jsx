@@ -11,6 +11,7 @@ import OurTeam from './pages/OurTeam.jsx';
 import Testimonial from './pages/Testimonial.jsx';
 import Contact from './pages/Contact.jsx';
 import BookTable from './pages/BookTable.jsx';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import './style.css';
 
 const App = () => {

@@ -1,10 +1,17 @@
 import React from 'react';
-
+import Servicecpn from '../components/Servicecpn';
+import Aboutcpn from '../components/Aboutcpn';
+import Menucpn from '../components/Menucpn';
+import TeamStartcpn from '../components/TeamStartcpn';
+import FeetBack from '../components/FeetBackcpn';
 const Home = () => {
   return (
     <div className="home">
-      <h2>HOME</h2>
-      <p>Welcome to our home page!</p>
+      <Servicecpn></Servicecpn>
+      <Aboutcpn></Aboutcpn>
+      <Menucpn></Menucpn>
+      <TeamStartcpn></TeamStartcpn>
+      <FeetBack></FeetBack>
     </div>
   );
 };

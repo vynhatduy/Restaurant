@@ -1,10 +1,10 @@
 import React from 'react';
+import Contaccpn from '../components/Contactcpn';
 
 const Contact = () => {
     return (
         <div className="home">
-            <h2>Contact</h2>
-            <p>Welcome to our home page!</p>
+            <Contaccpn/>
         </div>
     );
 };

@@ -9,9 +9,10 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController:ControllerBase
+    public class OrderController : ControllerBase
     {
         private ApplicationDbContext _context;
+        private string apiUrl = "https://localhost:5001";
         public OrderController(ApplicationDbContext context)
         {
             _context = context;
@@ -32,37 +33,37 @@ namespace WebAPI.Controllers
                     TongTien = x.ThanhTien
                 }).ToList());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-        
+
         [HttpGet("OrderDetail")]
         public IActionResult GetAllOrderDetail()
         {
             try
             {
-                return Ok(_context.HoaDons.Select(x=>new OrderDetailResponseModel
+                return Ok(_context.HoaDons.Select(x => new OrderDetailResponseModel
                 {
-                    IdHoaDon=x.IdHoaDon,
-                    IdNhanVien=x.IdNhanVien,
-                    TongTien=x.ThanhTien,
-                    SoBan=x.Ban.SoBan,
-                    DsSanPham=_context.ChiTietHoaDons.Where(x=>x.IdHoaDon==x.IdHoaDon).Select(sp=>new ProductResponseModel
+                    IdHoaDon = x.IdHoaDon,
+                    IdNhanVien = x.IdNhanVien,
+                    TongTien = x.ThanhTien,
+                    SoBan = x.Ban.SoBan,
+                    DsSanPham = _context.ChiTietHoaDons.Where(x => x.IdHoaDon == x.IdHoaDon).Select(sp => new ProductResponseModel
                     {
-                        IdSanPham=sp.IdSanPham,
-                        DonGia=sp.GiaBan,
-                        HinhAnh=sp.SanPham.HinhAnh,
-                        Loai=sp.SanPham.Loai.TenLoai,
-                        MoTa=sp.SanPham.MoTa,
-                        SoLuong=sp.SoLuong,
-                        TrangThai=sp.TrangThai,
-                        SoSao=sp.SanPham.SoSao
+                        IdSanPham = sp.IdSanPham,
+                        DonGia = sp.GiaBan,
+                        HinhAnh = sp.SanPham.HinhAnh,
+                        Loai = sp.SanPham.Loai.TenLoai,
+                        MoTa = sp.SanPham.MoTa,
+                        SoLuong = sp.SoLuong,
+                        TrangThai = sp.TrangThai,
+                        SoSao = sp.SanPham.SoSao
                     }).ToList()
                 }).ToList());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
@@ -74,7 +75,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                return Ok(_context.HoaDons.Where(x=>x.TrangThai==TrangThai).Select(x => new OrderResponseModel
+                return Ok(_context.HoaDons.Where(x => x.TrangThai == TrangThai).Select(x => new OrderResponseModel
                 {
                     IdHoaDon = x.IdHoaDon,
                     IdNhanVien = x.IdNhanVien,
@@ -102,7 +103,7 @@ namespace WebAPI.Controllers
                     IdNhanVien = x.IdNhanVien,
                     TongTien = x.ThanhTien,
                     SoBan = x.Ban.SoBan,
-                    DsSanPham = _context.ChiTietHoaDons.Where(x => x.IdHoaDon == x.IdHoaDon&&x.TrangThai==TrangThai).Select(sp => new ProductResponseModel
+                    DsSanPham = _context.ChiTietHoaDons.Where(x => x.IdHoaDon == x.IdHoaDon && x.TrangThai == TrangThai).Select(sp => new ProductResponseModel
                     {
                         IdSanPham = sp.IdSanPham,
                         DonGia = sp.GiaBan,
@@ -126,7 +127,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                return Ok(_context.HoaDons.Where(x=>x.IdHoaDon==IdHoaDon).Select(x => new OrderDetailResponseModel
+                return Ok(_context.HoaDons.Where(x => x.IdHoaDon == IdHoaDon).Select(x => new OrderDetailResponseModel
                 {
                     IdHoaDon = x.IdHoaDon,
                     IdNhanVien = x.IdNhanVien,
@@ -152,7 +153,7 @@ namespace WebAPI.Controllers
         }
         [HttpPost("Order/Create/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
-        public IActionResult CreateOrderByEmployee(Guid IdNhanVien, OrderRequestModel model)
+        public IActionResult CreateOrderByEmployee(Guid IdNhanVien, OrderRequestModel model, string token)
         {
             try
             {
@@ -168,7 +169,15 @@ namespace WebAPI.Controllers
                             var addOrder = Order.AddOrder(newGuid, IdNhanVien, model, _context);
                             if (addOrder)
                             {
-                                return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
+                                var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: false, apiUrl: apiUrl, token: token);
+                                if (status)
+                                {
+                                    return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
+                                }
+                                else
+                                {
+                                    return BadRequest(new { ErrorMessage = $"Tạo đơn hàng thành công nhưng cập nhật trạng thái bàn thất bại" });
+                                }
                             }
                             return BadRequest(new { ErrorMessage = $"Xảy ra lỗi không xác định" });
                         }
@@ -183,14 +192,22 @@ namespace WebAPI.Controllers
                         var addOrder = Order.AddOrder(newGuid, IdNhanVien, model, _context);
                         if (addOrder)
                         {
-                            return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
+                            var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: false, apiUrl: apiUrl, token: token);
+                            if (status)
+                            {
+                                return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
+                            }
+                            else
+                            {
+                                return BadRequest(new { ErrorMessage = $"Tạo đơn hàng thành công nhưng cập nhật trạng thái bàn thất bại" });
+                            }
                         }
                         return BadRequest(new { ErrorMessage = $"Xảy ra lỗi không xác định" });
                     }
                 }
                 return BadRequest(new { Message = "Không có nhân viên nào như trên" });
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
@@ -206,10 +223,10 @@ namespace WebAPI.Controllers
                     if (item.TrangThai == true && item.DaThanhToan == true)
                     {
                         var newGuid = Guid.NewGuid();
-                        var addOrder = Order.AddOrder(IdHoaDon:newGuid, IdNhanVien:Guid.Empty ,model:model,context:_context);
+                        var addOrder = Order.AddOrder(IdHoaDon: newGuid, IdNhanVien: Guid.Empty, model: model, context: _context);
                         if (addOrder)
                         {
-                            return Ok(new { Message = $"Đơn hàng của bạn đã được tạo vui lòng chờ nhân viên xác nhận : {newGuid}" });
+                            return Ok(new { message = $"tạo đơn hàng mới thành công với id là : {newGuid}" });
                         }
                         return BadRequest(new { ErrorMessage = $"Xảy ra lỗi không xác định vui lòng liên hệ nhân viên" });
                     }
@@ -224,7 +241,8 @@ namespace WebAPI.Controllers
                     var addOrder = Order.AddOrder(IdHoaDon: newGuid, IdNhanVien: Guid.Empty, model: model, context: _context);
                     if (addOrder)
                     {
-                        return Ok(new { Message = $"Đơn hàng của bạn đã được tạo vui lòng chờ nhân viên xác nhận : {newGuid}" });
+                        return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
+
                     }
                     return BadRequest(new { ErrorMessage = $"Xảy ra lỗi không xác định vui lòng liên hệ nhân viên" });
                 }
@@ -235,13 +253,13 @@ namespace WebAPI.Controllers
             }
         }
         [HttpPut("Order/Update/{IdBan:guid}/{IdNhanVien:guid}")]
-        [Authorize(Roles ="Administrator,Management,User")]
-        public IActionResult UpdateOrder(Guid IdBan,Guid IdNhanVien)
+        [Authorize(Roles = "Administrator,Management,User")]
+        public IActionResult UpdateOrder(Guid IdBan, Guid IdNhanVien)
         {
             try
             {
                 var nhanvien = _context.NhanViens.FirstOrDefault(x => x.IdNhanVien == IdNhanVien);
-                if(nhanvien != null)
+                if (nhanvien != null)
                 {
                     var item = _context.HoaDons.Where(x => x.IdBan == IdBan).OrderByDescending(x => x.NgayCapNhat).FirstOrDefault();
                     if (item != null)
@@ -325,6 +343,53 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPut("Order/ConfirmPayment/{IdBan:guid}/{IdNhanVien:guid}")]
+        [Authorize(Roles = "Administrator,Management,User")]
+        public IActionResult OrderConfirmPayment(Guid IdBan, Guid IdNhanVien, string token)
+        {
+            try
+            {
+                var nhanvien = _context.NhanViens.FirstOrDefault(x => x.IdNhanVien == IdNhanVien);
+                if (nhanvien != null)
+                {
+                    var item = _context.HoaDons.Where(x => x.IdBan == IdBan).OrderByDescending(x => x.NgayCapNhat).FirstOrDefault();
+                    if (item != null)
+                    {
+                        if (item.TrangThai == true)
+                        {
+                            item.DaThanhToan = true;
+                            item.IdNhanVien = IdNhanVien;
+                            item.NgayCapNhat = DateTime.Now;
+                            _context.HoaDons.Update(item);
+                            _context.SaveChanges();
+
+                            var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: true, apiUrl: apiUrl, token: token);
+                            if (status)
+                            {
+                                return Ok(new { Message = $"Cập nhật trạng thái bàn thành công" });
+                            }
+                            else
+                            {
+                                return BadRequest(new { ErrorMessage = $"Thanh toán thành công nhưng chưa cập nhật được trạng thái bàn" });
+                            }
+                        }
+                        else
+                        {
+                            return NotFound(new { Message = "Đơn hàng mới nhất chưa được xác nhận" });
+                        }
+                    }
+                    return NotFound(new { Message = "Bàn này chưa có hóa đơn nào" });
+                }
+                else
+                {
+                    return BadRequest(new { Message = "Không có nhân viên nào như trên" });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
+            }
+        }
         [HttpDelete("Order/Delete/{IdHoaDon:guid}/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult DeleteOrder(Guid IdHoaDon, Guid IdNhanVien)
@@ -342,7 +407,7 @@ namespace WebAPI.Controllers
                         {
                             return Ok(new { Message = $"Nhân viên {nhanvien.HoTen} đã xóa thành công đơn hàng {IdHoaDon}" });
                         }
-                        return BadRequest(new {Message= "Xóa không thành công vui lòng kiểm tra lại log"});
+                        return BadRequest(new { Message = "Xóa không thành công vui lòng kiểm tra lại log" });
                     }
                     return NotFound(new { Message = "Không tìm thấy hóa đơn yêu cầu" });
                 }
@@ -358,7 +423,7 @@ namespace WebAPI.Controllers
         }
         [HttpDelete("OrderDetail/Delete/{IdHoaDon:guid}/{IdNhanVien:guid}/{IdSanPham:guid}")]
         [Authorize(Roles = "Administrator,Management")]
-        public IActionResult DeleteOrderDetail(Guid IdHoaDon, Guid IdNhanVien,Guid IdSanPham)
+        public IActionResult DeleteOrderDetail(Guid IdHoaDon, Guid IdNhanVien, Guid IdSanPham)
         {
             try
             {
@@ -368,12 +433,12 @@ namespace WebAPI.Controllers
                     var item = _context.HoaDons.Where(x => x.IdHoaDon == IdHoaDon).FirstOrDefault();
                     if (item != null)
                     {
-                        var result = Order.DeleteOrderDetail(IdHoaDon: IdHoaDon,IdSanPham:IdSanPham, context: _context);
+                        var result = Order.DeleteOrderDetail(IdHoaDon: IdHoaDon, IdSanPham: IdSanPham, context: _context);
                         if (result == true)
                         {
                             return Ok(new { Message = $"Nhân viên {nhanvien.HoTen} đã xóa thành công sản phẩm {IdSanPham} trong chi tiết đơn hàng {IdHoaDon}" });
                         }
-                        return BadRequest(new {Message= "Xóa không thành công vui lòng kiểm tra lại log"});
+                        return BadRequest(new { Message = "Xóa không thành công vui lòng kiểm tra lại log" });
                     }
                     return NotFound(new { Message = "Bàn này chưa có hóa đơn nào" });
                 }
