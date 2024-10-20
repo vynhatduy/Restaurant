@@ -1,8 +1,14 @@
 import React from 'react';
-import Menucpn from '../components/Menucpn';
+import TieuDeMenu from '../components/TieuDeMenu';
+import ProductList from '../components/Productcpn';
+import DetailList  from '../components/Detailcpn'
 const Menu = () => {
     return (
-        <Menucpn></Menucpn>
+        <div className="home">
+            <TieuDeMenu/>
+            <ProductList />
+            <DetailList/>
+        </div>
     );
 };
 
