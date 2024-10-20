@@ -41,7 +41,7 @@ const ProductList = () => {
             moTa: "Cơm Tấm ",  
             donGia: "100.000đ",
             soSao:"5.0",
-            trangThai:false,
+            trangThai:true,
             loai:"Cơm"
         },
         {
@@ -82,7 +82,7 @@ const ProductList = () => {
         <div className="container mt-1">
             <div className="row">
                 {products.map((product) => (
-                    <div className={product.trangThai==true ? "col-md-3 mb-4 ":"col-md-3 mb-4 bg-danger "}  key={product.idSanPham}>
+                    <div className="col-md-3 mb-4"  key={product.idSanPham}>
                         <div className="card text-start shadow p-1 mb-5 bg-white rounded">
                             <img src={product.hinhAnh} className="card-img-top" alt={product.tenSanPham} />
                             <div className="card-body">
