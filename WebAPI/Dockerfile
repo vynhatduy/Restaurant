@@ -2,7 +2,12 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
+EXPOSE 443 
+
+# Thiết lập biến môi trường để sử dụng HTTPS với chứng chỉ
+ENV ASPNETCORE_URLS=https://+:443;http://+:8080;
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=vynhatduy11092003
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
 
 # Sử dụng hình ảnh SDK để xây dựng ứng dụng
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -28,6 +33,11 @@ RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION --no-restore -o /ap
 # Tạo container cuối cùng
 FROM base AS final
 WORKDIR /app
+
+# Sao chép chứng chỉ HTTPS vào container
+COPY "./WebAPI/https/aspnetapp.pfx" /https/aspnetapp.pfx
+
+# Sao chép ứng dụng đã publish vào container
 COPY --from=publish /app/publish .
 
 # Định nghĩa điểm vào của ứng dụng

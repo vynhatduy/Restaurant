@@ -123,11 +123,14 @@ namespace WebAPI.Migrations
                     b.Property<Guid?>("IdSanPham")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("SoLuong")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("SoLuong")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("ThanhTien")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool?>("TrangThai")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdChiTietHoaDon");
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241014112400_UpdateDb")]
-    partial class UpdateDb
+    [Migration("20241018063614_UpdateDB")]
+    partial class UpdateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,11 +126,14 @@ namespace WebAPI.Migrations
                     b.Property<Guid?>("IdSanPham")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("SoLuong")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("SoLuong")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("ThanhTien")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool?>("TrangThai")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdChiTietHoaDon");
 

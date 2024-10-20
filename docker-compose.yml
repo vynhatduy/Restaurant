@@ -1,5 +1,8 @@
 ﻿version: '3.8'
 
+volumes:
+  sql_data:
+
 services:
   db:
     container_name: RestaurantDB
@@ -7,7 +10,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "Restaurants@@"
-      MSSQL_PID: Express
+      MSSQL_PID: "Express"
     ports:
       - "1433:1433"
     networks:
@@ -17,26 +20,26 @@ services:
 
   webapi:
     container_name: web-api
-    image: web-api
     build:
       context: .
       dockerfile: WebAPI/Dockerfile
     environment:
-      DbServer: "RestaurantDB" 
+      DbServer: "RestaurantDB"
       DbPort: "1433"
       DbUser: "SA"
       DbPassword: "Restaurants@@"
       Database: "NhaHangDB"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "vynhatduy11092003"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
     depends_on:
       - db
     ports:
       - "5000:8080"
-      - "5001:8081"
+      - "5001:443"
     networks:
       - backend
+    volumes:
+      - ./WebAPI/https:/https:ro
 
 networks:
   backend:
-
-volumes:
-  sql_data:

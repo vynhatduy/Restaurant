@@ -136,14 +136,15 @@ using (var scope = app.Services.CreateScope())
     try
     {
         dbContext.Database.Migrate();
-
         DatabaseInitializer.Initialize(dbContext);
+        Console.WriteLine("Khởi tạo cơ sở dữ liệu thành công.");
     }
     catch (Exception e)
     {
-        Console.WriteLine($"An error occurred while migrating or initializing the database: {e.Message}");
+        Console.WriteLine($"Không thể khởi tạo cơ sở dữ liệu: {e.Message}");
     }
 }
+
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();

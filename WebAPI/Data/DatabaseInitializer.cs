@@ -6,6 +6,7 @@ public class DatabaseInitializer
 {
     public static void Initialize(ApplicationDbContext context)
     { 
+        
 
         if (!context.Banners.Any())
         {

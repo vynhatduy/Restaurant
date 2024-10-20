@@ -9,6 +9,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "manchillgraden", "ManChillGraden\ManChillGraden\manchillgraden.esproj", "{EAF24B8B-7719-4142-AEF4-255ED9B09FCA}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "adminmanchillgraden", "AdminManChillGraden\adminmanchillgraden.esproj", "{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,12 @@ Global
 		{EAF24B8B-7719-4142-AEF4-255ED9B09FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAF24B8B-7719-4142-AEF4-255ED9B09FCA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAF24B8B-7719-4142-AEF4-255ED9B09FCA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F75D0C6-558A-4126-8A47-8536F0EEB2DA}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
