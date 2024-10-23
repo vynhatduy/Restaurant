@@ -97,7 +97,7 @@ namespace WebAPI.Controllers
                 TrangThai = x.TrangThai
             }).ToList());
         }
-        [HttpPost("Table/CreateTable")]
+        [HttpPost("CreateTable")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult CreateTable(TableRequestModel model)
         {
@@ -130,9 +130,9 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpPost("Arear/CreateArear")]
+        [HttpPost("CreateArea")]
         [Authorize(Roles = "Administrator,Management")]
-        public IActionResult CreateArear(AreaRequestModel model)
+        public IActionResult CreateArea(AreaRequestModel model)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpPut("Table/UpdateStatus/{IdBan:guid}")]
+        [HttpPut("UpdateTable/{IdBan:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
         public IActionResult UpdateTableStatus(Guid IdBan, bool status)
         {
@@ -182,7 +182,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpPut("Area/UpdateArea/{IdKhuVuc:guid}")]
+        [HttpPut("UpdateArea/{IdKhuVuc:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
         public IActionResult UpdateAreaStatus(Guid IdKhuVuc, bool status)
         {
@@ -213,7 +213,7 @@ namespace WebAPI.Controllers
             }
         }
         
-        [HttpDelete("Area/DeleteArea/{IdKhuVuc:guid}")]
+        [HttpDelete("DeleteArea/{IdKhuVuc:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult  DeleteArea(Guid IdKhuVuc)
         {
@@ -239,7 +239,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpDelete("Table/DeleteTable/{IdBan:guid}")]
+        [HttpDelete("DeleteTable/{IdBan:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult  DeleteTable(Guid IdBan)
         {

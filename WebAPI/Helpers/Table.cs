@@ -2,30 +2,23 @@
 {
     public class Table
     {
-        public static bool UpdateTableStatus(Guid? IdBan, bool status,string apiUrl,string token)
+        public static bool UpdateTableStatus(Guid? IdBan, bool status,ApplicationDbContext context)
         {
             try
             {
-                using (var client = new HttpClient())
+                var item = context.Bans.FirstOrDefault(x => x.IdBan == IdBan);
+                if (item == null)
                 {
-                    var url = $"{apiUrl}/api/Tables/Table/UpdateStatus/{IdBan}?status={status}";
-                    var response = client.PutAsync(url, null).Result;
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        var errorContent = response.Content.ReadAsStringAsync().Result;
-                        Console.WriteLine($"Error Content: {errorContent}");
-                    }
-                    return response.IsSuccessStatusCode;
+                    return false;
                 }
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine($"Request error: {e.Message}");
-                return false;
+                item.TrangThai = status;
+                context.Bans.Update(item);
+                context.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"General error: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
                 return false;
             }
         }

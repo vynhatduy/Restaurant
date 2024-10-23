@@ -18,7 +18,7 @@ namespace NhaHang.Controllers
         {
             _context = context;
         }
-        [HttpGet("AllProduct")]
+        [HttpGet("All")]
         public IActionResult GetProducts()
         {
             try
@@ -57,7 +57,7 @@ namespace NhaHang.Controllers
             }
         }
 
-        [HttpGet("Product/{IdSanPham:guid}")]
+        [HttpGet("ById/{IdSanPham:guid}")]
         public IActionResult GetById(Guid IdSanPham)
         {
             try
@@ -71,7 +71,7 @@ namespace NhaHang.Controllers
             }
         }
 
-        [HttpGet("Product/Type/{IdLoai:guid}")]
+        [HttpGet("ByType/{IdLoai:guid}")]
         public IActionResult GetByTypeProduct(Guid IdLoai)
         {
             try
@@ -85,7 +85,7 @@ namespace NhaHang.Controllers
             }
         }
 
-        [HttpGet("Product/Name/{TenSanPham}")]
+        [HttpGet("ByName/{TenSanPham}")]
         public IActionResult GetByName(string TenSanPham)
         {
             try
@@ -99,7 +99,7 @@ namespace NhaHang.Controllers
             }
         }
 
-        [HttpPost("Product")]
+        [HttpPost("Create")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult AddProduct(ProductRequestModel model)
         {
@@ -140,7 +140,7 @@ namespace NhaHang.Controllers
                 return BadRequest(new { Message = e.Message });
             }
         }
-        [HttpPut("Product/{IdSanPham:guid}")]
+        [HttpPut("Update/{IdSanPham:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult UpdateProduct(Guid IdSanPham, ProductRequestModel model)
         {
@@ -180,7 +180,7 @@ namespace NhaHang.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpDelete("Product/{IdSanPham:guid}")]
+        [HttpDelete("Delete/{IdSanPham:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult DeleteProduct(Guid IdSanPham)
         {

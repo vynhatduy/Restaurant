@@ -17,7 +17,7 @@ namespace WebAPI.Controllers
         {
             _context = context;
         }
-        [HttpGet("Order")]
+        [HttpGet("All")]
         public IActionResult GetAllOrder()
         {
             try
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("OrderDetail")]
+        [HttpGet("AllDetail")]
         public IActionResult GetAllOrderDetail()
         {
             try
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("OrderByStatus/{TrangThai:bool}")]
+        [HttpGet("ByStatus/{TrangThai:bool}")]
 
         public IActionResult GetAllOrderByStatus(bool TrangThai)
         {
@@ -92,7 +92,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("OrderDetailByStatus/{TrangThai:bool}")]
+        [HttpGet("DetailByStatus/{TrangThai:bool}")]
         public IActionResult GetAllOrderDetailByStatus(bool TrangThai)
         {
             try
@@ -121,7 +121,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpGet("OrderDetailByOrderId/{IdHoaDon:guid}")]
+        [HttpGet("DetailByOrderId/{IdHoaDon:guid}")]
 
         public IActionResult GetOrderDetailByOrderId(Guid IdHoaDon)
         {
@@ -151,7 +151,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpPost("Order/Create/{IdNhanVien:guid}")]
+        [HttpPost("Create/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
         public IActionResult CreateOrderByEmployee(Guid IdNhanVien, OrderRequestModel model, string token)
         {
@@ -169,7 +169,7 @@ namespace WebAPI.Controllers
                             var addOrder = Order.AddOrder(newGuid, IdNhanVien, model, _context);
                             if (addOrder)
                             {
-                                var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: false, apiUrl: apiUrl, token: token);
+                                var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: false, context:_context);
                                 if (status)
                                 {
                                     return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
@@ -192,7 +192,7 @@ namespace WebAPI.Controllers
                         var addOrder = Order.AddOrder(newGuid, IdNhanVien, model, _context);
                         if (addOrder)
                         {
-                            var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: false, apiUrl: apiUrl, token: token);
+                            var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: false, context: _context);
                             if (status)
                             {
                                 return Ok(new { Message = $"Tạo đơn hàng mới thành công với Id là : {newGuid}" });
@@ -212,7 +212,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpPost("Order/Create")]
+        [HttpPost("Create")]
         public IActionResult CreateOrderByCustomer(OrderRequestModel model)
         {
             try
@@ -252,7 +252,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpPut("Order/Update/{IdBan:guid}/{IdNhanVien:guid}")]
+        [HttpPut("Update/{IdBan:guid}/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
         public IActionResult UpdateOrder(Guid IdBan, Guid IdNhanVien)
         {
@@ -290,7 +290,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpPut("OrderDetail/Update/{IdHoaDon:guid}/{IdNhanVien:guid}")]
+        [HttpPut("Detail/Update/{IdHoaDon:guid}/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
         public IActionResult UpdateOrderDetail(Guid IdHoaDon, Guid IdNhanVien, List<Guid> DsIdSanPham)
         {
@@ -343,7 +343,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut("Order/ConfirmPayment/{IdBan:guid}/{IdNhanVien:guid}")]
+        [HttpPut("ConfirmPayment/{IdBan:guid}/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management,User")]
         public IActionResult OrderConfirmPayment(Guid IdBan, Guid IdNhanVien, string token)
         {
@@ -390,7 +390,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpDelete("Order/Delete/{IdHoaDon:guid}/{IdNhanVien:guid}")]
+        [HttpDelete("Delete/{IdHoaDon:guid}/{IdNhanVien:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult DeleteOrder(Guid IdHoaDon, Guid IdNhanVien)
         {
@@ -421,7 +421,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { ErrorMessage = $"Lỗi: {e.Message}" });
             }
         }
-        [HttpDelete("OrderDetail/Delete/{IdHoaDon:guid}/{IdNhanVien:guid}/{IdSanPham:guid}")]
+        [HttpDelete("Detail/Delete/{IdHoaDon:guid}/{IdNhanVien:guid}/{IdSanPham:guid}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult DeleteOrderDetail(Guid IdHoaDon, Guid IdNhanVien, Guid IdSanPham)
         {
