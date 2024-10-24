@@ -3,7 +3,7 @@ name: Build and Deploy to Azure
 on:
   push:
     branches:
-      - master  # Hoặc nhánh chính bạn muốn triển khai
+      - master  # Hoặc nhánh bạn muốn triển khai
 
 jobs:
   build-and-deploy:
@@ -13,22 +13,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Thiết lập Docker Buildx để build image
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
+    # Đăng nhập vào Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}   # Docker Hub username
+        password: ${{ secrets.DOCKER_PASSWORD }}   # Docker Hub password
 
+    # Build và push image lên Docker Hub
     - name: Build and push Docker image
       run: |
-        docker build . -t <dockerhub_username>/<image_name>:latest
-        docker push <dockerhub_username>/<image_name>:latest
+        docker build -f WebAPI/Dockerfile . -t vynhatduy/restaurants:latest
+        docker push vynhatduy/restaurants:latest
 
+    # Deploy Docker container lên Azure Web App bằng Publish Profile
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: '<azure-app-service-name>'
-        images: '<dockerhub_username>/<image_name>:latest'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}   # Sử dụng Publish Profile đã cấu hình
+        images: 'vynhatduy/restaurants:latest'
