@@ -27,12 +27,12 @@ jobs:
     # Build và push image lên Docker Hub
     - name: Build and push Docker image
       run: |
-        docker build . -t <dockerhub_username>/<image_name>:latest
-        docker push <dockerhub_username>/<image_name>:latest
+        docker build . -t vynhatduy/restaurants:latest
+        docker push vynhatduy/restaurants:latest
 
     # Deploy Docker container lên Azure Web App bằng Publish Profile
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}   # Sử dụng Publish Profile đã cấu hình
-        images: '<dockerhub_username>/<image_name>:latest'
+        images: 'vynhatduy/restaurants:latest'
