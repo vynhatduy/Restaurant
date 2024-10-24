@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: WebAPI/Dockerfile
     environment:
-      DbServer: "RestaurantDB"
+      DbServer: "db"
       DbPort: "1433"
       DbUser: "SA"
       DbPassword: "Restaurants@@"
