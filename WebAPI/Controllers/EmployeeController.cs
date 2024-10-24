@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpGet("ByName{HoTen:string}")]
+        [HttpGet("ByName{HoTen}")]
         public IActionResult GetByName(string HoTen)
         {
             try
@@ -137,7 +137,7 @@ namespace WebAPI.Controllers
             }
         }
         
-        [HttpPost("Update/{Username:string}/{TenQuyen:string}")]
+        [HttpPost("Update/{Username}/{TenQuyen}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult Update(string Username,string TenQuyen)
         {
@@ -159,7 +159,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpDelete("Delete/{Username:string}")]
+        [HttpDelete("Delete/{Usernamez}")]
         [Authorize(Roles = "Administrator,Management")]
         public IActionResult Delete(string Username)
         {

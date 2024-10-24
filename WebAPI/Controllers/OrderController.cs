@@ -363,7 +363,7 @@ namespace WebAPI.Controllers
                             _context.HoaDons.Update(item);
                             _context.SaveChanges();
 
-                            var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: true, apiUrl: apiUrl, token: token);
+                            var status = Table.UpdateTableStatus(IdBan: item.IdBan, status: true,context:_context);
                             if (status)
                             {
                                 return Ok(new { Message = $"Cập nhật trạng thái bàn thành công" });
