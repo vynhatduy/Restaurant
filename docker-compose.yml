@@ -1,4 +1,4 @@
-﻿version: '3.8'
+version: '3.8'
 
 # volumes:
 #   sql_data:
@@ -31,6 +31,9 @@ services:
       Database: "NhaHangDB"
       ASPNETCORE_Kestrel__Certificates__Default__Password: "vynhatduy11092003"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+      AZURE_CLIENT_ID: "${AZURE_CLIENT_ID}"
+      AZURE_TENANT_ID: "${AZURE_TENANT_ID}"
+      AZURE_CLIENT_SECRET: "${AZURE_CLIENT_SECRET}"
     # depends_on:
     #   - db
     ports:
