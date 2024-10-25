@@ -102,10 +102,10 @@ public class SanPham
     public string TenSanPham { get; set; } // Bắt buộc
 
     [Required]
-    [StringLength(255)]
+    [StringLength(1000)]
     public string? MoTa { get; set; } // Bắt buộc
 
-    [StringLength(500)]
+    [StringLength(int.MaxValue)]
     public string? MoTaChiTiet { get; set; } // Có thể null
 
     [Required]

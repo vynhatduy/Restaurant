@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Azure.Identity;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NhaHang.Helpers;
@@ -29,19 +29,26 @@ builder.Services.AddCors(options =>
 });
 
 
-// Lấy thông tin kết nối từ biến môi trường
-var server = Environment.GetEnvironmentVariable("DbServer") ?? "RestaurantDB"; // Tên container
-var port = Environment.GetEnvironmentVariable("DbPort") ?? "1433";
-var user = Environment.GetEnvironmentVariable("DbUser") ?? "SA";
-var password = Environment.GetEnvironmentVariable("DbPassword") ?? "Restaurants@@";
-var database = Environment.GetEnvironmentVariable("Database") ?? "NhaHangDB";
+string keyVaultUri = builder.Configuration["KeyVaultUri"];
 
-var connect = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password};TrustServerCertificate=True";
+builder.Configuration.AddAzureKeyVault(
+    new Uri(keyVaultUri),
+    new DefaultAzureCredential()
+);
 
+var connectionString = builder.Configuration["AzureDBConnectionString"];
 // Thêm Db context như một dịch vụ cho ứng dụng
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(connect);
+    //options.UseSqlServer(connect);
+    options.UseSqlServer(connectionString, o =>
+    {
+        o.EnableRetryOnFailure(
+            maxRetryCount:5,
+            maxRetryDelay:TimeSpan.FromSeconds(10),
+            errorNumbersToAdd:null
+            );
+    });
 });
 
 // Cấu hình JWT
@@ -141,7 +148,8 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Không thể khởi tạo cơ sở dữ liệu: {e.Message}");
+        Console.WriteLine($"Không thể khởi tạo cơ sở dữ liệu message: {e.Message}");
+        Console.WriteLine($"Không thể khởi tạo cơ sở dữ liệu inner: {e.InnerException}");
     }
 }
 

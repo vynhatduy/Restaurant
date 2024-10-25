@@ -1,22 +1,22 @@
 ﻿version: '3.8'
 
-volumes:
-  sql_data:
+# volumes:
+#   sql_data:
 
 services:
-  db:
-    container_name: RestaurantDB
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Restaurants@@"
-      MSSQL_PID: "Express"
-    ports:
-      - "1433:1433"
-    networks:
-      - backend
-    volumes:
-      - sql_data:/var/opt/mssql
+  # db:
+  #   container_name: RestaurantDB
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     SA_PASSWORD: "Restaurants@@"
+  #     MSSQL_PID: "Express"
+  #   ports:
+  #     - "1433:1433"
+  #   networks:
+  #     - backend
+  #   volumes:
+  #     - sql_data:/var/opt/mssql
 
   webapi:
     container_name: web-api
@@ -31,8 +31,8 @@ services:
       Database: "NhaHangDB"
       ASPNETCORE_Kestrel__Certificates__Default__Password: "vynhatduy11092003"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     ports:
       - "5000:8080"
       - "5001:443"
