@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_8bd3dea9dbe7429fabc31dd7c10d8f06 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_de53553528b94cb6872ed4a6e151462f }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_3d7237e5e7944515987e39380e65c1eb }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_06c309c22abc449cb26c396bc36dcc2f }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8bd3dea9dbe7429fabc31dd7c10d8f06 }}/restaurant:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_3d7237e5e7944515987e39380e65c1eb }}/restaurant:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'restaurant'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_8275d953d71b432699485da0344d2d57 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8bd3dea9dbe7429fabc31dd7c10d8f06 }}/restaurant:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_51232e90834f45cf90b8697db17c32e3 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_3d7237e5e7944515987e39380e65c1eb }}/restaurant:${{ github.sha }}'
