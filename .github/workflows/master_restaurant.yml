@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_28de68dd5c4c437eb6a55651df09e3ef }}/restaurants_api:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./WebAPI/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
